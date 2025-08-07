@@ -1,0 +1,45 @@
+## Build
+bin/
+obj/
+
+## VS Code
+.vscode/
+
+## User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Dotnet artifacts
+*.dbmdl
+*.log
+*.pdb
+*.cache
+*.ds_store
+
+## OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+## Rider
+.idea/
+
+## Logs
+*.log
+
+## dotenv
+.env
+.env.*
+
+## ASP.NET Secrets
+secrets.json
+
+## Node (se tiver front separado)
+node_modules/
+dist/
+
+## Others
+*.vspscc
+.vs/
