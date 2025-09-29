@@ -12,5 +12,6 @@ namespace ProjectScene.Domain.Entities
         public DateTime? LastLogin { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiry { get; set; }
+        public required string Username { get; set; }
     }
 }

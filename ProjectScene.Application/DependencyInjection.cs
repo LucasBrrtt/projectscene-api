@@ -2,13 +2,14 @@ using Microsoft.Extensions.DependencyInjection;
 using ProjectScene.Application.Interfaces;
 using ProjectScene.Application.Services;
 
-namespace ProjectScene.Application;
-
-public static class DependencyInjection
+namespace ProjectScene.Application
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static class DependencyInjection
     {
-        services.AddScoped<IUserService, UserService>();
-        return services;
+        public static IServiceCollection AddApplication(this IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>();
+            return services;
+        }
     }
 }

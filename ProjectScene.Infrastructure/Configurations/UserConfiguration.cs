@@ -22,5 +22,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.LastLogin).HasColumnName("last_login");
         builder.Property(e => e.RefreshToken).HasColumnName("refresh_token").HasMaxLength(255);
         builder.Property(e => e.RefreshTokenExpiry).HasColumnName("refresh_token_expiry");
+        builder.Property(e => e.Username).HasColumnName("username").HasMaxLength(100);
     }
 }

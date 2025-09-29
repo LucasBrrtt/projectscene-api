@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProjectScene.Application.Interfaces;
+using ProjectScene.Application.Services;
 using ProjectScene.Domain.Interfaces;
 using ProjectScene.Infrastructure.Data;
 using ProjectScene.Infrastructure.Repositories;
@@ -20,6 +22,7 @@ namespace ProjectScene.Infrastructure
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

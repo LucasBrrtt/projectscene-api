@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectScene.API.DTOs.User;
 using ProjectScene.Application.Interfaces;
@@ -16,6 +17,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserRequest request)
     {
@@ -26,11 +28,12 @@ public class UserController : ControllerBase
             PasswordHash = request.PasswordHash,
             AccessLevel = request.AccessLevel,
             CreatedAt = DateTime.UtcNow,
-            IsActive = true
+            IsActive = true,
+            Username = request.Username
         };
 
         await _userService.CreateAsync(user);
 
         return Ok(new { message = "Usuário criado com sucesso!" });
-    }
+    }     
 }
