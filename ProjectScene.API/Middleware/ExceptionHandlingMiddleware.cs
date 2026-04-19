@@ -25,6 +25,7 @@ namespace ProjectScene.API.Middleware
             }
             catch (Exception ex)
             {
+                // Registra o erro no log antes de montar a resposta HTTP.
                 _logger.LogError(ex, "Unhandled exception");
 
                 await HandleExceptionAsync(context, ex);
@@ -36,6 +37,7 @@ namespace ProjectScene.API.Middleware
             var statusCode = HttpStatusCode.InternalServerError;
             var message = "Ocorreu um erro inesperado.";
 
+            // Traduz excecoes internas para respostas HTTP previsiveis.
             switch (ex)
             {
                 case DuplicateResourceException duplicateResourceEx:
@@ -68,6 +70,7 @@ namespace ProjectScene.API.Middleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
 
+            // Mantem o json de erro no mesmo padrao camelCase da API.
             var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
             return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));

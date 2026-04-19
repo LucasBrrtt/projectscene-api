@@ -17,9 +17,11 @@ public class JwtOptions
 
         if (ExpirationHours > 0)
         {
+            // Mantém compatibilidade com configuração antiga em horas.
             return ExpirationHours * 60;
         }
 
+        // Fallback padrão quando nada foi configurado.
         return 60;
     }
 }

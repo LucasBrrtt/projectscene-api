@@ -4,6 +4,7 @@ namespace ProjectScene.Domain.Interfaces;
 
 public interface IUserRepository
 {
+    // Define o acesso aos dados da entidade de usuário.
     Task AddAsync(User user);
 
     Task<User?> GetByUsernameAsync(string username);

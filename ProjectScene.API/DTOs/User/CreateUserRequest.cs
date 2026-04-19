@@ -4,6 +4,7 @@ namespace ProjectScene.API.DTOs.User;
 
 public class CreateUserRequest
 {
+    // Contrato de entrada usado no cadastro publico.
     [Required(ErrorMessage = "Nome completo e obrigatorio.")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Nome completo deve ter entre 3 e 100 caracteres.")]
     public string FullName { get; set; } = string.Empty;

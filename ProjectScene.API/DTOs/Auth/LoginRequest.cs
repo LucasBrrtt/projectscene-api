@@ -4,6 +4,7 @@ namespace ProjectScene.API.DTOs.Auth;
 
 public class LoginRequest
 {
+    // Contrato de entrada usado na autenticacao.
     [Required(ErrorMessage = "Username e obrigatorio.")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Username deve ter entre 3 e 100 caracteres.")]
     public string Username { get; set; } = string.Empty;

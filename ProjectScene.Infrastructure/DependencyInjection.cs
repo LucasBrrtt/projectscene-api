@@ -13,11 +13,7 @@ namespace ProjectScene.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Aqui você configura:
-            // - Banco de dados (DbContext)
-            // - Repositórios
-            // - Serviços externos (APIs, Storage, etc.)
-
+            // Registra acesso ao banco, repositórios e serviços de infraestrutura.
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 

@@ -10,6 +10,7 @@ public class PasswordHasherService : IPasswordHasherService
 
     public string HashPassword(User user, string password)
     {
+        // Usa o hasher padrão do ASP.NET para gerar o valor persistido.
         return _passwordHasher.HashPassword(user, password);
     }
 }

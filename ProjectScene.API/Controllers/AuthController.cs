@@ -18,6 +18,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        // Tenta autenticar e gerar o token JWT para o usuário informado.
         var token = await _authService.LoginAsync(request.Username, request.Password);
 
         if (token == null)

@@ -8,6 +8,7 @@ namespace ProjectScene.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            // Registra os casos de uso da camada de aplicação.
             services.AddScoped<IUserService, UserService>();
             return services;
         }

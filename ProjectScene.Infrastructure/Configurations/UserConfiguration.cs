@@ -8,6 +8,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
+        // Define como a entidade User é persistida na tabela users.
         builder.ToTable("users");
 
         builder.HasKey(e => e.Id);

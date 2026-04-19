@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    // Expoe a documentacao da API e o suporte ao token Bearer no Swagger.
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProjectScene API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -42,17 +43,20 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
+    // Libera chamadas de qualquer origem para facilitar integracao durante o desenvolvimento.
     options.AddPolicy("AllowAll", policy =>
         policy.AllowAnyOrigin()
               .AllowAnyMethod()
               .AllowAnyHeader());
 });
 
+// Registra os servicos da aplicacao e da infraestrutura.
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 
+// Falha na inicializacao se a configuracao essencial do JWT estiver ausente.
 var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 if (jwtOptions is null ||
     string.IsNullOrWhiteSpace(jwtOptions.Key) ||
@@ -64,9 +68,11 @@ if (jwtOptions is null ||
 
 var keyBytes = Encoding.UTF8.GetBytes(jwtOptions.Key);
 
+// Configura a validacao do token usado nas rotas protegidas.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Esses parametros definem quando um token sera aceito pela API.
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -91,8 +97,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Centraliza o tratamento de excecoes antes de chegar no controller.
 app.UseMiddleware<ProjectScene.API.Middleware.ExceptionHandlingMiddleware>();
 app.UseCors("AllowAll");
+
+// Authentication identifica o usuario; Authorization aplica as regras de acesso.
 app.UseAuthentication();
 app.UseAuthorization();
 

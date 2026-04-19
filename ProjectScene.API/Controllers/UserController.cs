@@ -18,6 +18,7 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] CreateUserRequest request)
     {
+        // Encaminha o cadastro para a camada de aplicação.
         var user = await _userService.RegisterAsync(
             request.FullName,
             request.Email,
@@ -32,6 +33,7 @@ public class UserController : ControllerBase
             Username = user.Username
         };
 
+        // Retorna apenas os dados públicos do usuário recém-criado.
         return StatusCode(StatusCodes.Status201Created, response);
     }
 }
