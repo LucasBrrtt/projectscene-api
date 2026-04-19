@@ -23,6 +23,7 @@ namespace ProjectScene.Infrastructure
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 
             return services;
         }

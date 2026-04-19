@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using ProjectScene.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -33,24 +34,25 @@ namespace ProjectScene.API.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             var statusCode = HttpStatusCode.InternalServerError;
-            string message = "Ocorreu um erro inesperado.";
+            var message = "Ocorreu um erro inesperado.";
 
-            // Mapeamento de erros comuns
             switch (ex)
             {
-                // Erro de chave duplicada (Postgres: 23505)
-                case DbUpdateException dbEx when dbEx.InnerException is PostgresException pgEx && pgEx.SqlState == "23505":
-                    statusCode = HttpStatusCode.BadRequest;
-                    message = "Já existe um registro com esse valor único.";
+                case DuplicateResourceException duplicateResourceEx:
+                    statusCode = HttpStatusCode.Conflict;
+                    message = duplicateResourceEx.Message;
                     break;
 
-                // Argumentos inválidos
+                case DbUpdateException dbEx when dbEx.InnerException is PostgresException pgEx && pgEx.SqlState == "23505":
+                    statusCode = HttpStatusCode.Conflict;
+                    message = "Ja existe um registro com este valor unico.";
+                    break;
+
                 case ArgumentException argEx:
                     statusCode = HttpStatusCode.BadRequest;
                     message = argEx.Message;
                     break;
 
-                // Não encontrado
                 case KeyNotFoundException notFoundEx:
                     statusCode = HttpStatusCode.NotFound;
                     message = notFoundEx.Message;

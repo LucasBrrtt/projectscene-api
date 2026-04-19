@@ -4,5 +4,5 @@ namespace ProjectScene.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<User> CreateAsync(User user);
+    Task<User> RegisterAsync(string fullName, string email, string username, string password);
 }

@@ -28,16 +28,18 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var user = await _userRepository.GetByUsernameAsync(username);
+        var normalizedUsername = username.Trim().ToLowerInvariant();
+
+        var user = await _userRepository.GetByUsernameAsync(normalizedUsername);
         if (user is null || !user.IsActive || !_userRepository.VerifyPassword(user, password))
         {
             return null;
         }
 
-        return GenerateToken(user);
+        return GenerateJwtToken(user);
     }
 
-    private string GenerateToken(User user)
+    private string GenerateJwtToken(User user)
     {
         var key = Encoding.UTF8.GetBytes(_jwtOptions.Key);
         var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -54,7 +56,7 @@ public class AuthService : IAuthService
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.GetTokenExpirationMinutes()),
+            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ResolveTokenExpirationMinutes()),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

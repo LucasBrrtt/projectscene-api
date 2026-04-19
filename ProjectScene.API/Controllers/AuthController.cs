@@ -2,28 +2,29 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectScene.API.DTOs.Auth;
 using ProjectScene.Application.Interfaces;
 
-namespace ProjectScene.API.Controllers
+namespace ProjectScene.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
     {
-        private readonly IAuthService _authService;
+        _authService = authService;
+    }
 
-        public AuthController(IAuthService authService)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        var token = await _authService.LoginAsync(request.Username, request.Password);
+
+        if (token == null)
         {
-            _authService = authService;
+            return Unauthorized(new { message = "Usuario ou senha invalidos" });
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
-        {
-            var token = await _authService.LoginAsync(request.Username, request.Password);
-
-            if (token == null)
-                return Unauthorized(new { message = "Usuário ou senha inválidos" });
-
-            return Ok(new { token });
-        }
+        return Ok(new { token });
     }
 }

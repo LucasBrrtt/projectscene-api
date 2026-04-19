@@ -17,10 +17,6 @@ public class CreateUserRequest
     [StringLength(100, MinimumLength = 6, ErrorMessage = "Senha deve ter entre 6 e 100 caracteres.")]
     public string Password { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Nivel de acesso e obrigatorio.")]
-    [StringLength(20, ErrorMessage = "Nivel de acesso deve ter no maximo 20 caracteres.")]
-    public string AccessLevel { get; set; } = "user";
-
     [Required(ErrorMessage = "Username e obrigatorio.")]
     [StringLength(100, MinimumLength = 3, ErrorMessage = "Username deve ter entre 3 e 100 caracteres.")]
     public string Username { get; set; } = string.Empty;
