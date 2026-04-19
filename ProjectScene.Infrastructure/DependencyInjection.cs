@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectScene.Application.Interfaces;
-using ProjectScene.Application.Services;
 using ProjectScene.Domain.Interfaces;
 using ProjectScene.Infrastructure.Data;
 using ProjectScene.Infrastructure.Repositories;
+using ProjectScene.Infrastructure.Services;
 
 namespace ProjectScene.Infrastructure
 {

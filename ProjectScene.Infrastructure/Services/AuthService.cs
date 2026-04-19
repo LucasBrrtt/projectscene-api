@@ -1,60 +1,62 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ProjectScene.Application.Interfaces;
 using ProjectScene.Application.Options;
+using ProjectScene.Domain.Entities;
 using ProjectScene.Domain.Interfaces;
 
-namespace ProjectScene.Application.Services
+namespace ProjectScene.Infrastructure.Services;
+
+public class AuthService : IAuthService
 {
-    public class AuthService : IAuthService
+    private readonly IUserRepository _userRepository;
+    private readonly JwtOptions _jwtOptions;
+
+    public AuthService(IUserRepository userRepository, IOptions<JwtOptions> jwtOptions)
     {
-        private readonly IConfiguration _config;
-        private readonly IUserRepository _userRepository;
-        private readonly JwtOptions _jwtOptions;
+        _userRepository = userRepository;
+        _jwtOptions = jwtOptions.Value;
+    }
 
-        public AuthService(IUserRepository userRepository, IOptions<JwtOptions> jwtOptions)
+    public async Task<string?> LoginAsync(string username, string password)
+    {
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
         {
-            _userRepository = userRepository;
-            _jwtOptions = jwtOptions.Value;
-        }
-
-        public async Task<string?> LoginAsync(string username, string password)
-        {
-            var user = await _userRepository.GetByUsernameAsync(username);
-
-            if (user != null && _userRepository.VerifyPassword(user, password))
-            {
-                return GenerateToken(user.Id.ToString());
-            }
-
             return null;
         }
 
-        public string GenerateToken(string userId)
+        var user = await _userRepository.GetByUsernameAsync(username);
+        if (user is null || !user.IsActive || !_userRepository.VerifyPassword(user, password))
         {
-            var key = Encoding.UTF8.GetBytes(_jwtOptions.Key);
-            var creds = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId)
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: _jwtOptions.Issuer,
-                audience: _jwtOptions.Audience,
-                expires: DateTime.UtcNow.AddHours(_jwtOptions.ExpirationHours),
-                claims: claims,
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return null;
         }
-        
-        
+
+        return GenerateToken(user);
+    }
+
+    private string GenerateToken(User user)
+    {
+        var key = Encoding.UTF8.GetBytes(_jwtOptions.Key);
+        var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Role, user.AccessLevel)
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: _jwtOptions.Issuer,
+            audience: _jwtOptions.Audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.GetTokenExpirationMinutes()),
+            signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

@@ -25,7 +25,7 @@ public class UserController : ControllerBase
         {
             FullName = request.FullName,
             Email = request.Email,
-            PasswordHash = request.PasswordHash,
+            PasswordHash = request.Password,
             AccessLevel = request.AccessLevel,
             CreatedAt = DateTime.UtcNow,
             IsActive = true,

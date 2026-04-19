@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProjectScene.API.DTOs.Auth;
 using ProjectScene.Application.Interfaces;
 
 namespace ProjectScene.API.Controllers
@@ -25,6 +26,4 @@ namespace ProjectScene.API.Controllers
             return Ok(new { token });
         }
     }
-
-    public record LoginRequest(string Username, string Password);
 }
