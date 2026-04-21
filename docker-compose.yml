@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: projectscene-postgres
+    environment:
+      POSTGRES_DB: project_scene_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - projectscene_postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    restart: unless-stopped
+
+volumes:
+  projectscene_postgres_data:
