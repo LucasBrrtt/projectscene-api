@@ -17,18 +17,37 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        var passwordHasher = new PasswordHasher<User>();
-
-        // gera hash a partir da senha digitada
-        user.PasswordHash = passwordHasher.HashPassword(user, user.PasswordHash);
-
+        // Salva a entidade e confirma a alteracao no banco.
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
     }
 
     public async Task<User?> GetByUsernameAsync(string username)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+        return await _context.Users
+            // Evita tracking quando a consulta e so para leitura.
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Username == username);
+    }
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _context.Users
+            // Evita tracking quando a consulta e so para leitura.
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<bool> ExistsByUsernameAsync(string username)
+    {
+        // Usa AnyAsync para consultar apenas existencia.
+        return await _context.Users.AnyAsync(u => u.Username == username);
+    }
+
+    public async Task<bool> ExistsByEmailAsync(string email)
+    {
+        // Usa AnyAsync para consultar apenas existencia.
+        return await _context.Users.AnyAsync(u => u.Email == email);
     }
     
     public bool VerifyPassword(User user, string password)
@@ -36,6 +55,7 @@ public class UserRepository : IUserRepository
         var passwordHasher = new PasswordHasher<User>();
         var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
+        // So aceita senha validada com sucesso pelo hasher.
         return result == PasswordVerificationResult.Success;
     }
 }

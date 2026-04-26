@@ -2,6 +2,6 @@
 
 public interface IAuthService
 {
-    string GenerateToken(string userId);
+    // Autentica o usuário e retorna o JWT quando as credenciais são válidas.
     Task<string?> LoginAsync(string username, string password);
 }

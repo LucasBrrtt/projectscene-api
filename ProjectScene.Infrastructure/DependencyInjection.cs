@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectScene.Application.Interfaces;
-using ProjectScene.Application.Services;
 using ProjectScene.Domain.Interfaces;
 using ProjectScene.Infrastructure.Data;
 using ProjectScene.Infrastructure.Repositories;
+using ProjectScene.Infrastructure.Services;
 
 namespace ProjectScene.Infrastructure
 {
@@ -13,16 +13,13 @@ namespace ProjectScene.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Aqui você configura:
-            // - Banco de dados (DbContext)
-            // - Repositórios
-            // - Serviços externos (APIs, Storage, etc.)
-
+            // Registra acesso ao banco, repositórios e serviços de infraestrutura.
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IPasswordHasherService, PasswordHasherService>();
 
             return services;
         }

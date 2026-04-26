@@ -16,7 +16,7 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Carrega os mapeamentos (se tiver algum arquivo de configuração)
+        // Aplica automaticamente os mapeamentos encontrados na infraestrutura.
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 }
