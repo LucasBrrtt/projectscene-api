@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -43,11 +44,20 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
-    // Libera chamadas de qualquer origem para facilitar integracao durante o desenvolvimento.
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin()
+    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        if (allowedOrigins.Length == 0)
+        {
+            return;
+        }
+
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
-              .AllowAnyHeader());
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
 });
 
 // Registra os servicos da aplicacao e da infraestrutura.
@@ -86,7 +96,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 var app = builder.Build();
 
@@ -100,7 +115,11 @@ app.UseHttpsRedirection();
 
 // Centraliza o tratamento de excecoes antes de chegar no controller.
 app.UseMiddleware<ProjectScene.API.Middleware.ExceptionHandlingMiddleware>();
-app.UseCors("AllowAll");
+var corsOrigins = app.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+if (corsOrigins.Length > 0)
+{
+    app.UseCors("AllowFrontend");
+}
 
 // Authentication identifica o usuario; Authorization aplica as regras de acesso.
 app.UseAuthentication();

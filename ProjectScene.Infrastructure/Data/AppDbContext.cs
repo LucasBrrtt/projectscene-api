@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     {
     }
 
+    // Expõe a tabela de usuários para consultas e persistência via EF Core.
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

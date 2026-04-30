@@ -25,16 +25,18 @@ public class UserRepository : IUserRepository
     public async Task<User?> GetByUsernameAsync(string username)
     {
         return await _context.Users
-            // Evita tracking quando a consulta e so para leitura.
-            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Username == username);
+    }
+
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
     }
 
     public async Task<User?> GetByEmailAsync(string email)
     {
         return await _context.Users
-            // Evita tracking quando a consulta e so para leitura.
-            .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
@@ -48,6 +50,19 @@ public class UserRepository : IUserRepository
     {
         // Usa AnyAsync para consultar apenas existencia.
         return await _context.Users.AnyAsync(u => u.Email == email);
+    }
+
+    public async Task UpdateAsync(User user)
+    {
+        // Reaproveita a entidade rastreada quando disponivel para evitar regravar campos nao alterados.
+        var entry = _context.Entry(user);
+
+        if (entry.State == EntityState.Detached)
+        {
+            _context.Users.Attach(user);
+        }
+
+        await _context.SaveChangesAsync();
     }
     
     public bool VerifyPassword(User user, string password)

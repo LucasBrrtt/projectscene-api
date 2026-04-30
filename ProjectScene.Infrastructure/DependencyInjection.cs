@@ -15,6 +15,7 @@ namespace ProjectScene.Infrastructure
         {
             // Registra acesso ao banco, repositórios e serviços de infraestrutura.
             services.AddDbContext<AppDbContext>(options =>
+                // Usa a mesma connection string consumida pela API e pelo DbSetup.
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IUserRepository, UserRepository>();

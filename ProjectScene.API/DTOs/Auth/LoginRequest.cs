@@ -12,4 +12,6 @@ public class LoginRequest
     [Required(ErrorMessage = "Senha e obrigatoria.")]
     [StringLength(100, MinimumLength = 6, ErrorMessage = "Senha deve ter entre 6 e 100 caracteres.")]
     public string Password { get; set; } = string.Empty;
+
+    public bool RememberMe { get; set; }
 }

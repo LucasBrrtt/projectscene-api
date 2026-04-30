@@ -12,9 +12,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.ToTable("users");
 
         builder.HasKey(e => e.Id);
+
+        // Reforça no banco as mesmas regras de unicidade validadas pela aplicação.
         builder.HasIndex(e => e.Email).IsUnique();
         builder.HasIndex(e => e.Username).IsUnique();
 
+        // Mantém o mapeamento em snake_case para casar com o padrão adotado no PostgreSQL.
         builder.Property(e => e.Id).HasColumnName("id");
         builder.Property(e => e.FullName).HasColumnName("full_name").HasMaxLength(100);
         builder.Property(e => e.Email).HasColumnName("email").HasMaxLength(150);
@@ -23,8 +26,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.IsActive).HasColumnName("is_active");
         builder.Property(e => e.CreatedAt).HasColumnName("created_at");
         builder.Property(e => e.LastLogin).HasColumnName("last_login");
+
+        // Campos usados na renovação de sessão sem exigir novo login por senha.
         builder.Property(e => e.RefreshToken).HasColumnName("refresh_token").HasMaxLength(255);
         builder.Property(e => e.RefreshTokenExpiry).HasColumnName("refresh_token_expiry");
+        builder.Property(e => e.RefreshTokenPersistent).HasColumnName("refresh_token_persistent");
         builder.Property(e => e.Username).HasColumnName("username").HasMaxLength(100);
     }
 }

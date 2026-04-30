@@ -123,7 +123,7 @@ Se quiser apagar e recriar tudo:
 ```
 
 Esse comando usa o `AppDbContext` e os mapeamentos da infraestrutura para criar o banco e as tabelas.
-Ele tambem aplica os indices unicos de `email` e `username` quando eles ainda nao existirem.
+Ele tambem aplica os indices unicos de `email` e `username` e adiciona as colunas de refresh token quando elas ainda nao existirem.
 
 Resumo do script:
 
@@ -157,13 +157,14 @@ docker compose up -d
 
 ## Atualizando um banco local que ja existia
 
-Se o banco local foi criado antes da configuracao atual, aplique o script abaixo para garantir os indices unicos:
+Se o banco local foi criado antes da configuracao atual, aplique os scripts abaixo para garantir os indices unicos e as colunas de sessao:
 
 ```powershell
 psql -h localhost -p 5432 -U postgres -d project_scene_db -f .\database\scripts\001_users_unique_indexes.sql
+psql -h localhost -p 5432 -U postgres -d project_scene_db -f .\database\scripts\002_users_refresh_token_columns.sql
 ```
 
-No fluxo sem Docker, `.\scripts\setup-db.ps1` tambem tenta criar esses indices automaticamente.
+No fluxo sem Docker, `.\scripts\setup-db.ps1` tambem tenta criar esses indices e colunas automaticamente.
 
 ## Rodando a API
 

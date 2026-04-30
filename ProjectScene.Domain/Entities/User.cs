@@ -17,13 +17,20 @@ namespace ProjectScene.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
+        // Registrado em UTC para não depender do fuso de quem criou o usuário.
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Atualizado quando o login é concluído com sucesso.
         public DateTime? LastLogin { get; set; }
 
+        // Token persistido para renovar a sessão sem reenviar credenciais.
         public string? RefreshToken { get; set; }
 
+        // Define até quando o refresh token acima pode ser aceito.
         public DateTime? RefreshTokenExpiry { get; set; }
+
+        // Indica se a sessao foi criada como persistente ("lembrar de mim").
+        public bool? RefreshTokenPersistent { get; set; }
 
         // Identificador usado no login.
         public required string Username { get; set; }
