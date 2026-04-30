@@ -83,11 +83,13 @@ Se o banco local ja existia antes da configuracao atual, aplique tambem:
 
 ```bash
 psql -h localhost -p 5432 -U postgres -d project_scene_db -f database/scripts/001_users_unique_indexes.sql
+psql -h localhost -p 5432 -U postgres -d project_scene_db -f database/scripts/002_users_refresh_token_columns.sql
 ```
 
-No fluxo sem Docker, `.\scripts\setup-db.ps1` tambem tenta criar esses indices automaticamente.
+No fluxo sem Docker, `.\scripts\setup-db.ps1` tambem tenta criar esses indices e colunas automaticamente.
 
 ## Scripts deste diretorio
 
 - `init.sql`: inicializacao do banco no fluxo com Docker
 - `scripts/001_users_unique_indexes.sql`: cria indices unicos para `users.email` e `users.username`
+- `scripts/002_users_refresh_token_columns.sql`: adiciona colunas de refresh token em bancos antigos

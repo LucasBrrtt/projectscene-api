@@ -1,0 +1,8 @@
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS refresh_token VARCHAR(255) NULL;
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS refresh_token_expiry TIMESTAMP NULL;
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS refresh_token_persistent BOOLEAN NULL;

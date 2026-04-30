@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_login TIMESTAMP NULL,
     refresh_token VARCHAR(255) NULL,
     refresh_token_expiry TIMESTAMP NULL,
+    refresh_token_persistent BOOLEAN NULL,
     username VARCHAR(100) NOT NULL
 );
 
